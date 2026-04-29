@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Panel</title>
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Courier New, monospace;
+}
+
+body{
+background:black;
+color:#00ff00;
+overflow:hidden;
+height:100vh;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+.container{
+padding:20px;
+}
+
+.title{
+font-size:38px;
+text-align:center;
+text-shadow:0 0 15px #00ff00;
+margin-bottom:15px;
+}
+
+.clock{
+text-align:center;
+font-size:22px;
+color:cyan;
+margin-bottom:20px;
+}
+
+.panel{
+border:2px solid #00ff00;
+padding:15px;
+height:320px;
+overflow-y:auto;
+background:rgba(0,0,0,0.75);
+box-shadow:0 0 20px #00ff00;
+}
+
+.line{
+margin:4px 0;
+}
+
+.buttons{
+margin-top:20px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+button{
+background:black;
+color:#00ff00;
+border:2px solid #00ff00;
+padding:12px;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+background:#00ff00;
+color:black;
+box-shadow:0 0 15px #00ff00;
+}
+
+.footer{
+text-align:center;
+margin-top:15px;
+color:#00aa00;
+font-size:14px;
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+<div class="title">CYBER PANEL</div>
+<div class="clock" id="clock"></div>
+
+<div class="panel" id="terminal">
+<div class="line">Sistema iniciado...</div>
+<div class="line">Conexão segura estabelecida.</div>
+<div class="line">Bem-vindo, operador.</div>
+</div>
+
+<div class="buttons">
+<button onclick="run('Escaneando portas...')">NMAP</button>
+<button onclick="run('Verificando IP local...')">IP</button>
+<button onclick="run('Monitorando processos...')">PS</button>
+<button onclick="run('Analisando rede...')">REDE</button>
+<button onclick="run('Acesso SSH preparado.')">SSH</button>
+<button onclick="run('Sistema limpo.')">CLEAR</button>
+</div>
+
+<div class="footer">Powered by Elliot Mobile Edition</div>
+</div>
+
+<script>
+function updateClock(){
+let now=new Date();
+document.getElementById("clock").innerText=
+now.toLocaleTimeString();
+}
+setInterval(updateClock,1000);
+updateClock();
+
+function run(msg){
+let term=document.getElementById("terminal");
+
+if(msg=="Sistema limpo."){
+term.innerHTML="";
+return;
+}
+
+let line=document.createElement("div");
+line.className="line";
+line.innerText="> "+msg;
+term.appendChild(line);
+term.scrollTop=term.scrollHeight;
+}
+
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize=14;
+const columns=canvas.width/fontSize;
+const drops=[];
+
+for(let i=0;i<columns;i++){
+drops[i]=1;
+}
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ff00";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+const text=letters[Math.floor(Math.random()*letters.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
+
+drops[i]++;
+}
+}
+
+setInterval(draw,33);
+</script>
+
+</body>
+</html>
